@@ -1,0 +1,32 @@
+.registerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.title {
+  font-size: 2rem;
+}
+
+.registerCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 1.25rem;
+
+  width: 100%;
+  max-width: 600px;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.obs {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.obs a {
+  color: #3b9ada;
+}

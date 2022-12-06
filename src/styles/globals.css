@@ -53,13 +53,6 @@ body {
   }
 }
 
-.mantine-TextInput-label,
-.mantine-PasswordInput-label,
-.mantine-InputWrapper-label {
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-
 .mantine-InputWrapper-error {
   font-size: 1rem;
 }
