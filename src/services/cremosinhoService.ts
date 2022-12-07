@@ -31,7 +31,7 @@ export const putCremosinho = async (cremosinho: ICremosinho) => {
   return data;
 };
 
-export const deleteCremosinho = async (id: string) => {
+export const deleteCremosinho = async (id: number) => {
   const { data } = await api.delete(`/cremosinho/${id}`);
 
   return data;

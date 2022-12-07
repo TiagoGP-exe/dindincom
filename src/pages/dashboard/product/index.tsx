@@ -12,15 +12,10 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { FC, useState } from "react";
-import { getCremosinho, ICremosinho, ICremosinhoType, postCremosinho, putCremosinho } from "../../../services/cremosinhoService";
+import { deleteCremosinho, getCremosinho, ICremosinho, ICremosinhoType, postCremosinho, putCremosinho } from "../../../services/cremosinhoService";
 import { convertMoney } from "../../../utils/string";
 import styles from "./styles.module.css";
 import { AddCremosinho } from "../../../components/AddCremosinho";
-
-
-
-
-
 
 const ths = (
   <tr>
@@ -99,6 +94,17 @@ const Cremosinho: FC<CremosinhoProps> = ({ allCremosinho }) => {
       <AddCremosinho onClose={closeAllModals} onSubmit={addProduct} />
     ),
   });
+
+  const deleteProduct = async(id:number)=>{
+    try {
+      await deleteCremosinho(id);
+      const response = await getCremosinho();
+      closeAllModals();
+      setCremosinho(response);
+    } catch (error) {
+      console.log(error)
+    }
+  };
   const openDeleteModal = (id: number, name: string) =>
     openConfirmModal({
       title: "Excluir Produto",
@@ -107,7 +113,7 @@ const Cremosinho: FC<CremosinhoProps> = ({ allCremosinho }) => {
       labels: { confirm: "Excluir o produto", cancel: "Cancelar" },
       confirmProps: { color: "red" },
       onCancel: () => console.log("Cancel"),
-      onConfirm: () => console.log("Confirmed"),
+      onConfirm: () => deleteProduct(id),
     });
 
   return (
