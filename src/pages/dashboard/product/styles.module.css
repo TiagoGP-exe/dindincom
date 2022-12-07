@@ -63,3 +63,9 @@
   
     min-height: calc(100vh - 80px);
   }
+
+  .containerModal {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
