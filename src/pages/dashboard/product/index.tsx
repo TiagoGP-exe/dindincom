@@ -2,11 +2,11 @@ import {
   ActionIcon,
   Button,
   Header,
-  Input,
-  PasswordInput,
   Table,
+  Text,
   TextInput,
 } from "@mantine/core";
+import { openConfirmModal } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons";
 import Head from "next/head";
 import Link from "next/link";
@@ -54,28 +54,58 @@ const ths = (
   </tr>
 );
 
-const rows = elements.map((element) => (
-  <tr key={element.id_cremosinho}>
-    <td>{element.sabor}</td>
-    <td>{convertMoney(element.vlr_unitario)}</td>
-    <td>{element.qtd_estoque}</td>
-    <td className={styles.tableFlex}>
-      <ActionIcon size={20} color="blue">
-        <IconEdit />
-      </ActionIcon>
-      <ActionIcon size={20} color="red">
-        <IconTrash />
-      </ActionIcon>
-    </td>
-  </tr>
-));
-
 interface IResultProduct {
   vlr_total: number;
   quantidade: number;
 }
 
 const Product = () => {
+  const rows = elements.map((element) => (
+    <tr key={element.id_cremosinho}>
+      <td>{element.sabor}</td>
+      <td>{convertMoney(element.vlr_unitario)}</td>
+      <td>{element.qtd_estoque}</td>
+      <td className={styles.tableFlex}>
+        <ActionIcon size={20} color="blue">
+          <IconEdit />
+        </ActionIcon>
+        <ActionIcon
+          onClick={() => openDeleteModal(element.id_cremosinho, element.sabor)}
+          size={20}
+          color="red"
+        >
+          <IconTrash />
+        </ActionIcon>
+      </td>
+    </tr>
+  ));
+
+  const openModal = () =>
+    openConfirmModal({
+      title: "Adicionar Produto",
+      children: (
+        <div className={styles.containerModal}>
+          <TextInput label="Sabor" placeholder="Sabor" />
+          <TextInput label="Preço" placeholder="Preço" />
+          <TextInput label="Quantidade" placeholder="Quantidade" />
+        </div>
+      ),
+      labels: { confirm: "Gravar", cancel: "Cancelar" },
+      onCancel: () => console.log("Cancelar"),
+      onConfirm: () => console.log("Criar"),
+    });
+
+  const openDeleteModal = (id: number, name: string) =>
+    openConfirmModal({
+      title: "Excluir Produto",
+      centered: true,
+      children: <Text size="sm">Deletar o produto "{name}" ?</Text>,
+      labels: { confirm: "Excluir o produto", cancel: "Cancelar" },
+      confirmProps: { color: "red" },
+      onCancel: () => console.log("Cancel"),
+      onConfirm: () => console.log("Confirmed"),
+    });
+
   return (
     <div>
       <Head>
@@ -94,7 +124,7 @@ const Product = () => {
 
       <main className={styles.containerProduct}>
         <div className={styles.tableStyle}>
-          <Button color="blue" size="md">
+          <Button onClick={openModal} color="blue" size="md">
             Adicionar
           </Button>
           <Table striped highlightOnHover withBorder withColumnBorders>

@@ -2,6 +2,7 @@ import { AppProps } from "next/app";
 import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import "../styles/globals.css";
+import { ModalsProvider } from "@mantine/modals";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -25,7 +26,9 @@ export default function App(props: AppProps) {
           fontFamily: "Poppins, sans-serif",
         }}
       >
-        <Component {...pageProps} />
+        <ModalsProvider>
+          <Component {...pageProps} />
+        </ModalsProvider>
       </MantineProvider>
     </>
   );
