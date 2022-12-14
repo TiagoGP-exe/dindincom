@@ -6,44 +6,23 @@ import {
   Text,
   TextInput,
 } from "@mantine/core";
-import { openConfirmModal } from "@mantine/modals";
+import { closeAllModals, openConfirmModal, openModal } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons";
+import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
+import { FC, useState } from "react";
+import { AddCremosinho } from "../../../components/AddCremosinho";
+import {
+  deleteCremosinho,
+  getCremosinho,
+  ICremosinho,
+  ICremosinhoType,
+  postCremosinho,
+  putCremosinho,
+} from "../../../services/cremosinhoService";
 import { convertMoney } from "../../../utils/string";
 import styles from "./styles.module.css";
-
-interface IProduct {
-  id_cremosinho: number;
-  sabor: string;
-  vlr_unitario: string;
-  qtd_estoque: string;
-  inativo: "f" | "v";
-}
-
-const elements: IProduct[] = [
-  {
-    id_cremosinho: 12,
-    sabor: "Ninho c/ Morango",
-    vlr_unitario: "4.50",
-    qtd_estoque: "20",
-    inativo: "f",
-  },
-  {
-    id_cremosinho: 14,
-    sabor: "Nutella ",
-    vlr_unitario: "4.00",
-    qtd_estoque: "15",
-    inativo: "f",
-  },
-  {
-    id_cremosinho: 8,
-    sabor: "Uva",
-    vlr_unitario: "3.50",
-    qtd_estoque: "12",
-    inativo: "f",
-  },
-];
 
 const ths = (
   <tr>
@@ -53,20 +32,21 @@ const ths = (
     <th>Ações</th>
   </tr>
 );
-
-interface IResultProduct {
-  vlr_total: number;
-  quantidade: number;
+interface ProductProps {
+  allCremosinho: ICremosinhoType[];
 }
 
-const Product = () => {
-  const rows = elements.map((element) => (
+const Product: FC<ProductProps> = ({ allCremosinho }) => {
+  const [cremosinho, setCremosinho] =
+    useState<ICremosinhoType[]>(allCremosinho);
+
+  const rows = cremosinho.map((element) => (
     <tr key={element.id_cremosinho}>
       <td>{element.sabor}</td>
       <td>{convertMoney(element.vlr_unitario)}</td>
       <td>{element.qtd_estoque}</td>
       <td className={styles.tableFlex}>
-        <ActionIcon size={20} color="blue">
+        <ActionIcon onClick={() => modalUpdate(element)} size={20} color="blue">
           <IconEdit />
         </ActionIcon>
         <ActionIcon
@@ -80,20 +60,62 @@ const Product = () => {
     </tr>
   ));
 
-  const openModal = () =>
-    openConfirmModal({
-      title: "Adicionar Produto",
+  const addProduct = async (data: ICremosinho) => {
+    try {
+      await postCremosinho({ ...data, inativo: "f" });
+      const response = await getCremosinho();
+      closeAllModals();
+      setCremosinho(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const updateProduct = async (data: ICremosinho) => {
+    try {
+      await putCremosinho(data);
+      const response = await getCremosinho();
+      closeAllModals();
+      setCremosinho(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const modalUpdate = (data: ICremosinho) =>
+    openModal({
+      title: "Editar Produto",
+      centered: true,
+      radius: "md",
       children: (
-        <div className={styles.containerModal}>
-          <TextInput label="Sabor" placeholder="Sabor" />
-          <TextInput label="Preço" placeholder="Preço" />
-          <TextInput label="Quantidade" placeholder="Quantidade" />
-        </div>
+        <AddCremosinho
+          onClose={closeAllModals}
+          onSubmit={updateProduct}
+          value={data}
+        />
       ),
-      labels: { confirm: "Gravar", cancel: "Cancelar" },
-      onCancel: () => console.log("Cancelar"),
-      onConfirm: () => console.log("Criar"),
     });
+
+  const modalAdd = () =>
+    openModal({
+      title: "Adicionar Produto",
+      centered: true,
+      radius: "md",
+      children: (
+        <AddCremosinho onClose={closeAllModals} onSubmit={addProduct} />
+      ),
+    });
+
+  const deleteProduct = async (id: number) => {
+    try {
+      await deleteCremosinho(id);
+      const response = await getCremosinho();
+      closeAllModals();
+      setCremosinho(response);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const openDeleteModal = (id: number, name: string) =>
     openConfirmModal({
@@ -102,8 +124,8 @@ const Product = () => {
       children: <Text size="sm">Deletar o produto "{name}" ?</Text>,
       labels: { confirm: "Excluir o produto", cancel: "Cancelar" },
       confirmProps: { color: "red" },
-      onCancel: () => console.log("Cancel"),
-      onConfirm: () => console.log("Confirmed"),
+      onCancel: () => console.log("cancel"),
+      onConfirm: () => deleteProduct(id),
     });
 
   return (
@@ -124,7 +146,7 @@ const Product = () => {
 
       <main className={styles.containerProduct}>
         <div className={styles.tableStyle}>
-          <Button onClick={openModal} color="blue" size="md">
+          <Button onClick={modalAdd} color="blue" size="md">
             Adicionar
           </Button>
           <Table striped highlightOnHover withBorder withColumnBorders>
@@ -136,5 +158,23 @@ const Product = () => {
     </div>
   );
 };
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  try {
+    const response = await getCremosinho();
+
+    return {
+      props: {
+        allCremosinho: response,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        allCremosinho: [],
+      },
+    };
+  }
+}
 
 export default Product;
