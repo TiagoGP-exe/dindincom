@@ -147,8 +147,8 @@ const Product: FC<ProductProps> = ({ allCremosinho }) => {
       </Head>
       <Header className={styles.header} bg="blue.6" height={80}>
         <Link href={"/dashboard"}>Venda</Link>
-        <Link href={"dashboard/deliveryman"}>Entregador</Link>
-        <Link className={styles.active} href={"dashboard/product"}>
+        <Link href={"/dashboard/deliveryman"}>Entregador</Link>
+        <Link className={styles.active} href={"/dashboard/product"}>
           Produtos
         </Link>
         <Link href={"/"}>Sair</Link>

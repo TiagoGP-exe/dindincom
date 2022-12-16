@@ -5,50 +5,52 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { FC, useState } from "react";
-import { AddCremosinho } from "../../../components/AddCremosinho";
+import { AddEntregador } from "../../../components/AddEntregador";
+import { deleteCremosinho } from "../../../services/cremosinhoService";
 import {
-  ICremosinho,
-  deleteCremosinho,
-  getCremosinho,
-  postCremosinho,
-  putCremosinho,
-} from "../../../services/cremosinhoService";
-import {
+  IEntregador,
   IEntregadorType,
+  deleteEntregador,
   getEntregador,
+  postEntregador,
+  putEntregador,
 } from "../../../services/entregadorService";
+import { formattedCpf } from "../../../utils/formatter";
 import { onlyNumbers } from "../../../utils/number";
-import { convertMoney } from "../../../utils/string";
 import styles from "./styles.module.css";
 
 const ths = (
   <tr>
-    <th>Sabor</th>
-    <th>Preço</th>
-    <th>Quantidade</th>
+    <th>Nome</th>
+    <th>CPF</th>
+    <th>Placa veiculo</th>
+    <th>Telefone</th>
+    <th>Rota</th>
     <th>Ações</th>
   </tr>
 );
-interface ProductProps {
+interface DeliveryManProps {
   allEntregador: IEntregadorType[];
 }
 
-const Product: FC<ProductProps> = ({ allEntregador }) => {
+const DeliveryMan: FC<DeliveryManProps> = ({ allEntregador }) => {
+  console.log(allEntregador);
   const [cremosinho, setCremosinho] =
     useState<IEntregadorType[]>(allEntregador);
 
   const rows = cremosinho.map((element) => (
-    <tr key={element.id}>
+    <tr key={element.id_entregador}>
       <td>{element.nome}</td>
-      <td>{convertMoney(element.placa_veiculo)}</td>
-      <td>{element.rota}</td>
+      <td>{formattedCpf(element.cpf)}</td>
+      <td>{element.placa_veiculo}</td>
       <td>{element.telefone}</td>
+      <td>{element.rota}</td>
       <td className={styles.tableFlex}>
         <ActionIcon onClick={() => modalUpdate(element)} size={20} color="blue">
           <IconEdit />
         </ActionIcon>
         <ActionIcon
-          onClick={() => openDeleteModal(element.id_cremosinho, element.sabor)}
+          onClick={() => openDeleteModal(element.id_entregador, element.nome)}
           size={20}
           color="red"
         >
@@ -58,50 +60,49 @@ const Product: FC<ProductProps> = ({ allEntregador }) => {
     </tr>
   ));
 
-  const addProduct = async (data: ICremosinho) => {
-    console.log((onlyNumbers(data.vlr_unitario) / 100).toFixed(0));
-
+  const addDeliveryMan = async (data: IEntregador) => {
     try {
-      await postCremosinho({
+      await postEntregador({
         ...data,
-        inativo: "f",
-        vlr_unitario: onlyNumbers(data.vlr_unitario) / 100,
+        cpf: String(onlyNumbers(data.cpf)),
       });
       closeAllModals();
-      const response = await getCremosinho();
+      const response = await getEntregador();
       setCremosinho(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const updateProduct = async (data: ICremosinho) => {
+  const updateDeliveryMan = async (data: IEntregadorType) => {
     try {
-      await putCremosinho({
+      await putEntregador({
         ...data,
-        vlr_unitario: onlyNumbers(data.vlr_unitario) / 100,
+        cpf: String(onlyNumbers(data.cpf)),
       });
       closeAllModals();
-      const response = await getCremosinho();
+      const response = await getEntregador();
       setCremosinho(response);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const modalUpdate = (data: ICremosinho) =>
+  const modalUpdate = (data: IEntregadorType) => {
+    console.log(data);
     openModal({
       title: "Editar Produto",
       centered: true,
       radius: "md",
       children: (
-        <AddCremosinho
+        <AddEntregador
           onClose={closeAllModals}
-          onSubmit={updateProduct}
+          onSubmit={updateDeliveryMan}
           value={data}
         />
       ),
     });
+  };
 
   const modalAdd = () =>
     openModal({
@@ -109,14 +110,14 @@ const Product: FC<ProductProps> = ({ allEntregador }) => {
       centered: true,
       radius: "md",
       children: (
-        <AddCremosinho onClose={closeAllModals} onSubmit={addProduct} />
+        <AddEntregador onClose={closeAllModals} onSubmit={addDeliveryMan} />
       ),
     });
 
-  const deleteProduct = async (id: number) => {
+  const deleteDeliveryMan = async (id: number) => {
     try {
-      await deleteCremosinho(id);
-      const response = await getCremosinho();
+      await deleteEntregador(id);
+      const response = await getEntregador();
       closeAllModals();
       setCremosinho(response);
     } catch (error) {
@@ -126,13 +127,13 @@ const Product: FC<ProductProps> = ({ allEntregador }) => {
 
   const openDeleteModal = (id: number, name: string) =>
     openConfirmModal({
-      title: "Excluir Produto",
+      title: "Excluir Entregador",
       centered: true,
-      children: <Text size="sm">Deletar o produto "{name}" ?</Text>,
-      labels: { confirm: "Excluir o produto", cancel: "Cancelar" },
+      children: <Text size="sm">Deletar o entregador "{name}" ?</Text>,
+      labels: { confirm: "Excluir", cancel: "Cancelar" },
       confirmProps: { color: "red" },
       onCancel: () => console.log("cancel"),
-      onConfirm: () => deleteProduct(id),
+      onConfirm: () => deleteDeliveryMan(id),
     });
 
   return (
@@ -144,10 +145,10 @@ const Product: FC<ProductProps> = ({ allEntregador }) => {
       </Head>
       <Header className={styles.header} bg="blue.6" height={80}>
         <Link href={"/dashboard"}>Venda</Link>
-        <Link href={"dashboard/delivereyman"}>Entregador</Link>
-        <Link className={styles.active} href={"dashboard/product"}>
-          Produtos
+        <Link className={styles.active} href={"/dashboard/deliveryman"}>
+          Entregador
         </Link>
+        <Link href={"/dashboard/product"}>Produtos</Link>
         <Link href={"/"}>Sair</Link>
       </Header>
 
@@ -184,4 +185,4 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   }
 }
 
-export default Product;
+export default DeliveryMan;

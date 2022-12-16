@@ -84,7 +84,7 @@ export const AddCremosinho: FC<AddCremosinhoProps> = ({
       {value?.id_cremosinho && (
         <Checkbox
           checked={isInativo}
-          {...register("inativo")}
+          onChange={(e) => setValue("inativo", e.target.checked ? "v" : "f")}
           label="Inativo"
         />
       )}

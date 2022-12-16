@@ -6,16 +6,17 @@ export interface IEntregador {
   telefone: string;
   placa_veiculo: string;
   rota: string;
+  id_entregador?: number;
 }
 
 export interface IEntregadorType extends IEntregador {
-  id: number;
+  id_entregador: number;
 }
 
 export const getEntregador = async () => {
-  const { data } = await api.get("/entregador");
+  const { data } = await api.get("/entregadores");
 
-  return data as IEntregador[];
+  return data as IEntregadorType[];
 };
 
 export const postEntregador = async (entregador: IEntregador) => {
@@ -25,13 +26,16 @@ export const postEntregador = async (entregador: IEntregador) => {
 };
 
 export const putEntregador = async (entregador: IEntregadorType) => {
-  const { data } = await api.put(`/entregador/${entregador.id}`, entregador);
+  const { data } = await api.put(
+    `/entregador/${entregador.id_entregador}`,
+    entregador
+  );
 
   return data;
 };
 
-export const deleteEntregador = async (cpf: string) => {
-  const { data } = await api.delete(`/entregador/${cpf}`);
+export const deleteEntregador = async (id: number) => {
+  const { data } = await api.delete(`/entregador/${id}`);
 
   return data;
 };

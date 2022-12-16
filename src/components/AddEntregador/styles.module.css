@@ -1,0 +1,18 @@
+.containerModal {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.ContainerButtons {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.Buttons {
+  flex: 1;
+}
