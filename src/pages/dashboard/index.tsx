@@ -15,7 +15,7 @@ const Dashboard = () => {
         <Link className={styles.active} href={"/dashboard"}>
           Venda
         </Link>
-        <Link href={"/delivereyman"}>Entregador</Link>
+        <Link href={"/deliveryman"}>Entregador</Link>
         <Link href={"dashboard/product"}>Produtos</Link>
         <Link href={"/"}>Sair</Link>
       </Header>

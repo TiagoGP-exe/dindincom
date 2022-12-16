@@ -8,6 +8,14 @@ export interface ICremosinho {
   id_cremosinho?: number;
 }
 
+export interface ICremosinhoPrice {
+  sabor: string;
+  vlr_unitario: number;
+  qtd_estoque: number;
+  inativo: "f" | "v";
+  id_cremosinho?: number;
+}
+
 export interface ICremosinhoType extends ICremosinho {
   id_cremosinho: number;
 }
@@ -18,13 +26,13 @@ export const getCremosinho = async () => {
   return data as ICremosinhoType[];
 };
 
-export const postCremosinho = async (cremosinho: ICremosinho) => {
+export const postCremosinho = async (cremosinho: ICremosinhoPrice) => {
   const { data } = await api.post("/cremosinho", cremosinho);
 
   return data;
 };
 
-export const putCremosinho = async (cremosinho: ICremosinho) => {
+export const putCremosinho = async (cremosinho: ICremosinhoPrice) => {
   const { data } = await api.put(
     `/cremosinho/${cremosinho.id_cremosinho}`,
     cremosinho

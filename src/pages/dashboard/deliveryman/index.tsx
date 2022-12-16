@@ -1,11 +1,4 @@
-import {
-  ActionIcon,
-  Button,
-  Header,
-  Table,
-  Text,
-  TextInput,
-} from "@mantine/core";
+import { ActionIcon, Button, Header, Table, Text } from "@mantine/core";
 import { closeAllModals, openConfirmModal, openModal } from "@mantine/modals";
 import { IconEdit, IconTrash } from "@tabler/icons";
 import { GetServerSidePropsContext } from "next";
@@ -14,16 +7,19 @@ import Link from "next/link";
 import { FC, useState } from "react";
 import { AddCremosinho } from "../../../components/AddCremosinho";
 import {
+  ICremosinho,
   deleteCremosinho,
   getCremosinho,
-  ICremosinho,
-  ICremosinhoType,
   postCremosinho,
   putCremosinho,
 } from "../../../services/cremosinhoService";
+import {
+  IEntregadorType,
+  getEntregador,
+} from "../../../services/entregadorService";
+import { onlyNumbers } from "../../../utils/number";
 import { convertMoney } from "../../../utils/string";
 import styles from "./styles.module.css";
-import { onlyNumbers } from "../../../utils/number";
 
 const ths = (
   <tr>
@@ -34,18 +30,19 @@ const ths = (
   </tr>
 );
 interface ProductProps {
-  allCremosinho: ICremosinhoType[];
+  allEntregador: IEntregadorType[];
 }
 
-const Product: FC<ProductProps> = ({ allCremosinho }) => {
+const Product: FC<ProductProps> = ({ allEntregador }) => {
   const [cremosinho, setCremosinho] =
-    useState<ICremosinhoType[]>(allCremosinho);
+    useState<IEntregadorType[]>(allEntregador);
 
   const rows = cremosinho.map((element) => (
-    <tr key={element.id_cremosinho}>
-      <td>{element.sabor}</td>
-      <td>{convertMoney(element.vlr_unitario)}</td>
-      <td>{element.qtd_estoque}</td>
+    <tr key={element.id}>
+      <td>{element.nome}</td>
+      <td>{convertMoney(element.placa_veiculo)}</td>
+      <td>{element.rota}</td>
+      <td>{element.telefone}</td>
       <td className={styles.tableFlex}>
         <ActionIcon onClick={() => modalUpdate(element)} size={20} color="blue">
           <IconEdit />
@@ -147,7 +144,7 @@ const Product: FC<ProductProps> = ({ allCremosinho }) => {
       </Head>
       <Header className={styles.header} bg="blue.6" height={80}>
         <Link href={"/dashboard"}>Venda</Link>
-        <Link href={"dashboard/deliveryman"}>Entregador</Link>
+        <Link href={"dashboard/delivereyman"}>Entregador</Link>
         <Link className={styles.active} href={"dashboard/product"}>
           Produtos
         </Link>
@@ -171,17 +168,17 @@ const Product: FC<ProductProps> = ({ allCremosinho }) => {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   try {
-    const response = await getCremosinho();
+    const response = await getEntregador();
 
     return {
       props: {
-        allCremosinho: response,
+        allEntregador: response,
       },
     };
   } catch {
     return {
       props: {
-        allCremosinho: [],
+        allEntregador: [],
       },
     };
   }

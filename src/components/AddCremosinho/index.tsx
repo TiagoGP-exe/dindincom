@@ -33,7 +33,7 @@ export const AddCremosinho: FC<AddCremosinhoProps> = ({
   } = useForm<ICremosinho>({
     resolver: yupResolver(schema),
     defaultValues: {
-      vlr_unitario: value?.vlr_unitario ?? "R$ 0,00",
+      vlr_unitario: formattedValue(value?.vlr_unitario ?? "") ?? "R$ 0,00",
       qtd_estoque: value?.qtd_estoque ?? 0,
       sabor: value?.sabor ?? "",
       inativo: value?.inativo ?? "f",
@@ -58,9 +58,14 @@ export const AddCremosinho: FC<AddCremosinhoProps> = ({
         onChange={(e) => {
           const value = e.target.value.replace(/\D/g, "");
 
+          if (Number(value) > 10000) {
+            setValue("vlr_unitario", formattedValue(9999, true));
+            return;
+          }
+
           setValue(
             "vlr_unitario",
-            e.target.value ? formattedValue(value) : "R$ 0,00"
+            e.target.value ? formattedValue(value, true) : "R$ 0,00"
           );
         }}
         error={errors.vlr_unitario?.message}
