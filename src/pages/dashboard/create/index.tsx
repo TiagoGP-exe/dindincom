@@ -177,8 +177,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       value: String(entregador.id_entregador),
     }));
 
-    console.log("formattedResponse", formattedResponse);
-
     return {
       props: {
         allEntregador: formattedResponse,
