@@ -19,6 +19,18 @@ const Dashboard = () => {
         <Link href={"/dashboard/product"}>Produtos</Link>
         <Link href={"/"}>Sair</Link>
       </Header>
+      <main className={styles.containerProduct}>
+        <div className={styles.tableStyle}>
+          <Button
+            component={Link}
+            href="/dashboard/create"
+            color="blue"
+            size="md"
+          >
+            Adicionar
+          </Button>
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,0 +1,53 @@
+.containerAllCremosinho {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  border-radius: 0.2rem;
+  padding: 1rem;
+  border: 1px solid rgb(219, 219, 219);
+}
+
+.contentAllCremosinho {
+  display: flex;
+  margin-top: 1rem;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 0.3rem;
+  height: 210px;
+  overflow-y: auto;
+
+  background-color: rgb(241, 241, 241);
+}
+
+.itemAllCremosinho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+
+  transition: all 0.15s ease-in-out;
+}
+
+.itemAllCremosinho:first-child {
+  border-radius: 0.3rem 0.3rem 0 0;
+}
+
+.itemAllCremosinho:last-child {
+  border-radius: 0 0 0.3rem 0.3rem;
+}
+
+.itemAllCremosinho:hover {
+  background-color: rgb(219, 219, 219);
+}
+
+.itemAllCremosinho.active {
+  background-color: #228be64d;
+  cursor: not-allowed;
+}
+
+.fontXS {
+  font-size: 0.8rem;
+  padding: 1rem 0;
+}

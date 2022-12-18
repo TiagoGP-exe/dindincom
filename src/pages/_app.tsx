@@ -3,6 +3,7 @@ import Head from "next/head";
 import { MantineProvider } from "@mantine/core";
 import "../styles/globals.css";
 import { ModalsProvider } from "@mantine/modals";
+import { NotificationsProvider } from "@mantine/notifications";
 
 export default function App(props: AppProps) {
   const { Component, pageProps } = props;
@@ -26,9 +27,11 @@ export default function App(props: AppProps) {
           fontFamily: "Poppins, sans-serif",
         }}
       >
-        <ModalsProvider>
-          <Component {...pageProps} />
-        </ModalsProvider>
+        <NotificationsProvider>
+          <ModalsProvider>
+            <Component {...pageProps} />
+          </ModalsProvider>
+        </NotificationsProvider>
       </MantineProvider>
     </>
   );
