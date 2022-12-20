@@ -56,3 +56,10 @@
   max-width: min(100%, 1280px);
   width: 90%;
 }
+
+.tableFlex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}

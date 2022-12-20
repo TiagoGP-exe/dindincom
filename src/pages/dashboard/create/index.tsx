@@ -14,6 +14,8 @@ import { getStatus } from "../../../services/statusService";
 import { formattedValue } from "../../../utils/formatter";
 import styles from "./styles.module.css";
 import { getUsuario } from "../../../services/usuarioService";
+import { postVenda } from "../../../services/vendaService";
+import { useRouter } from "next/router";
 
 export interface ICremosinhoSell extends ICremosinho {
   qtd: number;
@@ -51,7 +53,7 @@ const Dashboard: FC<DashboardProps> = ({
   allUsuario
 }) => {
   const [cremosinho, setCremosinho] = useState<ICremosinhoSell[]>([]);
-
+  const router = useRouter();
   const {
     handleSubmit,
     watch,
@@ -93,13 +95,18 @@ const Dashboard: FC<DashboardProps> = ({
     0
   );
 
-  const onSubmit = (data: IForm) => {
+  const onSubmit = async (data: IForm) => {
     const resultPerItem = cremosinho.map((item) => ({
       ...item,
       valor: Number(item.vlr_unitario) * item.qtd,
     }));
     const formattedData = { ...data, itens: resultPerItem, total };
-    console.log(formattedData);
+    try {
+      await postVenda(formattedData as any);
+      router.push('/dashboard')
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const entregador = watch("entregador");

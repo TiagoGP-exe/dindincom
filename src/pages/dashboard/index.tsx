@@ -8,6 +8,7 @@ import { GetServerSidePropsContext } from "next/types";
 import { FC, useState } from "react";
 import { IconEdit, IconTrash } from "@tabler/icons";
 import { formattedValue } from "../../utils/formatter";
+import { convertDate } from "../../utils/string";
 const ths = (
   <tr>
     <th>Cliente</th>
@@ -34,18 +35,22 @@ const Dashboard: FC<VendaProps> = ({allVenda}) => {
     <tr key={element.id_venda}>
       <td>{element.cliente}</td>
       <td>{formattedValue(element.total_da_venda)}</td>
-      <td>{element.data_da_venda}</td>
+      <td>{convertDate(element.data_da_venda)}</td>
       <td>{element.entrega}</td>
       <td>{element.entregador}</td>
-      <td>{element.dt_entrega}</td>
+      <td>{convertDate(element.dt_entrega)}</td>
       <td>{element.pago}</td>
       <td>{element.forma_de_pagamento}</td>
       <td>{element.status_da_venda}</td>
       <td className={styles.tableFlex}>
-        <ActionIcon >
+      <ActionIcon  size={20} color="blue">
           <IconEdit />
         </ActionIcon>
-        <ActionIcon>
+        <ActionIcon
+         
+          size={20}
+          color="red"
+        >
           <IconTrash />
         </ActionIcon>
       </td>
