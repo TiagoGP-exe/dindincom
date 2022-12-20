@@ -56,9 +56,7 @@ const Usuario: FC<UsuarioProps> = ({ allUsuario }) => {
 
   const addUsuario = async (data: IUsuario) => {
     try {
-      await postUsuario({
-        ...data,
-      });
+      await postUsuario(data);
       closeAllModals();
       const response = await getUsuario();
       setUsuario(response);
@@ -69,7 +67,7 @@ const Usuario: FC<UsuarioProps> = ({ allUsuario }) => {
 
   const updateUsuario = async (data: IUsuario) => {
     try {
-      await putUsuario({ ...data });
+      await putUsuario(data);
       closeAllModals();
       const response = await getUsuario();
       setUsuario(response);
@@ -80,7 +78,7 @@ const Usuario: FC<UsuarioProps> = ({ allUsuario }) => {
 
   const modalUpdate = (data: IUsuario) =>
     openModal({
-      title: "Editar Produto",
+      title: "Editar Usuário",
       centered: true,
       radius: "md",
       children: (
@@ -94,7 +92,7 @@ const Usuario: FC<UsuarioProps> = ({ allUsuario }) => {
 
   const modalAdd = () =>
     openModal({
-      title: "Adicionar Produto",
+      title: "Adicionar Usuário",
       centered: true,
       radius: "md",
       children: <AddUsuario onClose={closeAllModals} onSubmit={addUsuario} />,

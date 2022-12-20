@@ -1,11 +1,11 @@
-import { Button, Checkbox, Header, Select } from "@mantine/core";
-import { DatePicker } from "@mantine/dates";
 import "dayjs/locale/pt";
+import { Button, Checkbox, Select } from "@mantine/core";
+import { DatePicker } from "@mantine/dates";
 import { GetServerSidePropsContext } from "next";
-import Link from "next/link";
 import { FC, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Cart } from "../../../components/Cart";
+import { HeaderDashboard } from "../../../components/HeaderDashboard";
 import { ListAllCremosinho } from "../../../components/ListAllCremosinho";
 import { ICremosinho } from "../../../services/cremosinhoService";
 import { getEntregador } from "../../../services/entregadorService";
@@ -13,7 +13,6 @@ import { getFormaDePagamento } from "../../../services/formaDePagamentoService";
 import { getStatus } from "../../../services/statusService";
 import { formattedValue } from "../../../utils/formatter";
 import styles from "./styles.module.css";
-import { HeaderDashboard } from "../../../components/HeaderDashboard";
 
 export interface ICremosinhoSell extends ICremosinho {
   qtd: number;
@@ -50,7 +49,6 @@ const Dashboard: FC<DashboardProps> = ({
   const [cremosinho, setCremosinho] = useState<ICremosinhoSell[]>([]);
 
   const {
-    register,
     handleSubmit,
     watch,
     setValue,
