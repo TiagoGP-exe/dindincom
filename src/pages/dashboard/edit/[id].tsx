@@ -14,7 +14,7 @@ import { getStatus } from "../../../services/statusService";
 import { formattedValue } from "../../../utils/formatter";
 import styles from "./styles.module.css";
 import { getUsuario } from "../../../services/usuarioService";
-import { postVenda } from "../../../services/vendaService";
+import { postVenda, putVenda } from "../../../services/vendaService";
 import { useRouter } from "next/router";
 
 export interface ICremosinhoSell extends ICremosinho {
@@ -31,6 +31,7 @@ interface DashboardProps {
   allFormaDePagamento: ILabeledValue[];
   allStatus: ILabeledValue[];
   allUsuario: ILabeledValue[];
+  id: number;
 }
 
 interface IForm {
@@ -51,6 +52,7 @@ const Dashboard: FC<DashboardProps> = ({
   allFormaDePagamento,
   allStatus,
   allUsuario,
+  id,
 }) => {
   const [cremosinho, setCremosinho] = useState<ICremosinhoSell[]>([]);
   const router = useRouter();
@@ -100,10 +102,15 @@ const Dashboard: FC<DashboardProps> = ({
       ...item,
       valor: Number(item.vlr_unitario) * item.qtd,
     }));
-    const formattedData = { ...data, itens: resultPerItem, total };
+    const formattedData = {
+      ...data,
+      itens: resultPerItem,
+      total,
+      id_venda: id,
+    };
     try {
-      await postVenda(formattedData as any);
-      router.push('/dashboard')
+      await putVenda(formattedData as any);
+      router.push("/dashboard");
     } catch (error) {
       console.log(error);
     }
@@ -167,7 +174,7 @@ const Dashboard: FC<DashboardProps> = ({
               data={allUsuario}
               value={String(idUsuario)}
               onChange={(e) => e !== null && setValue("id_usuario", Number(e))}
-            ></Select>
+            />
             <Select
               label="Forma de Pagamento"
               placeholder="Selecione uma forma"
@@ -176,14 +183,14 @@ const Dashboard: FC<DashboardProps> = ({
               onChange={(e) =>
                 e !== null && setValue("id_forma_pagamento", Number(e))
               }
-            ></Select>
+            />
             <Select
               label="Status da Venda"
               placeholder="Selecione um status"
               data={allStatus}
               value={String(idStatus)}
               onChange={(e) => e !== null && setValue("id_status", Number(e))}
-            ></Select>
+            />
 
             <Cart
               actualCremosinho={cremosinho}
@@ -214,9 +221,9 @@ const Dashboard: FC<DashboardProps> = ({
 };
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  try {
-    console.log(ctx.query);
+  const { id } = ctx.query;
 
+  try {
     const result = await Promise.all([
       getEntregador(),
       getFormaDePagamento(),
@@ -249,12 +256,14 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         allFormaDePagamento: formattedFormaDePagamentoResponse,
         allStatus: formattedStatusResponse,
         allUsuario: formattedUserResponse,
+        id,
       },
     };
   } catch {
     return {
       props: {
         allEntregador: [],
+        id,
       },
     };
   }

@@ -4,8 +4,7 @@ export const convertMoney = (value: string | number) =>
     currency: "BRL",
   });
 
-
-  export const convertDate = (value: string) => {
-    const date = new Date(value);
-    return date.toLocaleDateString("pt-br");
-  };
+export const convertDate = (value: string) => {
+  const date = new Date(value);
+  return date.toLocaleDateString("pt-br");
+};

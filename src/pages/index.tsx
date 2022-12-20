@@ -47,8 +47,8 @@ export default function Home({ isLogged, userName }: IHomeProps) {
           className={styles.image}
           src="/cremosinho.png"
           alt="Picture of the author"
-          width={600}
-          height={600}
+          width={250}
+          height={250}
         />
       )}
     </div>

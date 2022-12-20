@@ -1,0 +1,95 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 2rem;
+
+  color: #fff;
+  gap: 1.5rem;
+}
+
+.header a {
+  display: flex;
+  height: 100%;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.header a.active {
+  display: flex;
+  background: rgba(0, 0, 0, 0.253);
+  height: 100%;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  justify-content: center;
+
+  transition: all 0.2s ease-in-out;
+}
+
+.header a.active:hover {
+  background: rgba(0, 0, 0, 0.534);
+}
+
+.header a:hover {
+  background: rgba(0, 0, 0, 0.253);
+}
+
+.containerProduct {
+  display: flex;
+  flex-direction: column;
+  padding: 4rem;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+
+  min-height: calc(100vh - 80px);
+}
+
+.tableStyle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+  max-width: min(100%, 1280px);
+  width: 90%;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.containerSell {
+  margin-top: 2rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 1120px;
+  gap: 1rem;
+  width: 100%;
+}
+
+.contentCart {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1rem;
+  flex: 1;
+}
+
+.hStack {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.mt {
+  margin-top: 1rem;
+}

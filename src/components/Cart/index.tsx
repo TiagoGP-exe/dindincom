@@ -18,7 +18,6 @@ export const Cart: FC<CartProps> = ({
   removeById,
   deleteById,
 }) => {
-  
   return (
     <div className={styles.containerCard}>
       <p>Resumo</p>
