@@ -13,6 +13,7 @@ import { getFormaDePagamento } from "../../../services/formaDePagamentoService";
 import { getStatus } from "../../../services/statusService";
 import { formattedValue } from "../../../utils/formatter";
 import styles from "./styles.module.css";
+import { getUsuario } from "../../../services/usuarioService";
 
 export interface ICremosinhoSell extends ICremosinho {
   qtd: number;
@@ -27,6 +28,7 @@ interface DashboardProps {
   allEntregador: ILabeledValue[];
   allFormaDePagamento: ILabeledValue[];
   allStatus: ILabeledValue[];
+  allUsuario: ILabeledValue[];
 }
 
 interface IForm {
@@ -39,12 +41,14 @@ interface IForm {
   id_forma_pagamento: number;
   id_entregador: number;
   id_status: number;
+  id_usuario: number;
 }
 
 const Dashboard: FC<DashboardProps> = ({
   allEntregador,
   allFormaDePagamento,
   allStatus,
+  allUsuario
 }) => {
   const [cremosinho, setCremosinho] = useState<ICremosinhoSell[]>([]);
 
@@ -102,6 +106,7 @@ const Dashboard: FC<DashboardProps> = ({
   const idEntregador = watch("id_entregador");
   const idFormaDePagamento = watch("id_forma_pagamento");
   const idStatus = watch("id_status");
+  const idUsuario = watch("id_usuario");
 
   const pago = watch("pago");
 
@@ -149,6 +154,15 @@ const Dashboard: FC<DashboardProps> = ({
                 </>
               )}
             </div>
+            <Select
+              label="Cliente"
+              placeholder="Selecione um cliente"
+              data={allUsuario}
+              value={String(idUsuario)}
+              onChange={(e) =>
+                e !== null && setValue("id_usuario", Number(e))
+              }
+            ></Select>
             <Select
               label="Forma de Pagamento"
               placeholder="Selecione uma forma"
@@ -199,6 +213,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     const entregadorResponse = await getEntregador();
     const formaDePagamentoResponse = await getFormaDePagamento();
     const statusResponse = await getStatus();
+    const usuarioResponse = await getUsuario();
 
     const formattedEntregadorResponse = entregadorResponse.map(
       (entregador) => ({
@@ -218,11 +233,17 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       value: String(entregador.id_status),
     }));
 
+    const formattedUserResponse = usuarioResponse.map((user) => ({
+      label: user.nome,
+      value: String(user.id_usuario),
+    }));
+
     return {
       props: {
         allEntregador: formattedEntregadorResponse,
         allFormaDePagamento: formattedFormaDePagamentoResponse,
         allStatus: formattedStatusResponse,
+        allUsuario: formattedUserResponse,
       },
     };
   } catch {
