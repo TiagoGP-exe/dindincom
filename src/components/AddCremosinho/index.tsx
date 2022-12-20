@@ -97,7 +97,7 @@ export const AddCremosinho: FC<AddCremosinhoProps> = ({
           onClick={onClose}
           uppercase
         >
-          Não
+          Cancelar
         </Button>
         <Button
           className={styles.Buttons}
@@ -105,7 +105,7 @@ export const AddCremosinho: FC<AddCremosinhoProps> = ({
           type="submit"
           uppercase
         >
-          sim
+          Gravar
         </Button>
       </div>
     </form>

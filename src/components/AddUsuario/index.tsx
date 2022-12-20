@@ -1,31 +1,17 @@
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Input, TextInput } from "@mantine/core";
+import { Button, Input, PasswordInput, TextInput } from "@mantine/core";
 import { ChangeEvent, FC } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
-import { IEntregador, IEntregadorType } from "../../services/entregadorService";
+import { IUsuario, IUsuarioType } from "../../services/usuarioService";
 import styles from "./styles.module.css";
 
 import InputMask from "react-input-mask";
-import { formattedCpf } from "../../utils/formatter";
+
 
 const schema = yup.object().shape({
   nome: yup.string().required("Campo obrigatório"),
-  cpf: yup
-    .string()
-    .required("Campo obrigatório")
-    .test({
-      test: (obj, ctx) => {
-        const cpf = obj?.replace(/\D/g, "");
-
-        if (cpf?.length === 11) {
-          return true;
-        }
-        return ctx.createError({
-          message: "CPF inválido",
-        });
-      },
-    }),
+  
   telefone: yup
     .string()
     .required("Campo obrigatório")
@@ -43,17 +29,18 @@ const schema = yup.object().shape({
         });
       },
     }),
-  placa_veiculo: yup.string().required("Campo obrigatório"),
-  rota: yup.string().required("Campo obrigatório"),
+ endereco: yup.string().required("Campo obrigatório"),
+  email: yup.string().required("Campo obrigatório"),
+  senha: yup.string().required("Campo obrigatório"),
 });
 
-interface AddEntregadorProps {
+interface AddUsuarioProps {
   onSubmit: (data: any) => void;
   onClose: () => void;
-  value?: IEntregador;
+  value?: IUsuario;
 }
 
-export const AddEntregador: FC<AddEntregadorProps> = ({
+export const AddUsuario: FC<AddUsuarioProps> = ({
   onClose,
   onSubmit,
   value,
@@ -64,19 +51,18 @@ export const AddEntregador: FC<AddEntregadorProps> = ({
     watch,
     setValue,
     formState: { errors },
-  } = useForm<IEntregador>({
+  } = useForm<IUsuario>({
     resolver: yupResolver(schema),
     defaultValues: {
       nome: value?.nome ?? "",
-      cpf: formattedCpf(value?.cpf ?? "") ?? "",
       telefone: value?.telefone ?? "",
-      placa_veiculo: value?.placa_veiculo ?? "",
-      rota: value?.rota ?? "",
-      id_entregador: value?.id_entregador ?? undefined,
+     endereco: value?.endereco ?? "",
+      email: value?.email ?? "",
+      id_usuario: value?.id_usuario ?? undefined,
     },
   });
 
-  const cpfValue = watch("cpf");
+
   const telefoneValue = watch("telefone");
 
   return (
@@ -87,19 +73,7 @@ export const AddEntregador: FC<AddEntregadorProps> = ({
         placeholder="Nome"
         error={errors.nome?.message}
       />
-      <Input.Wrapper label="CPF" error={errors.cpf?.message}>
-        <Input
-          {...register("cpf")}
-          component={InputMask as any}
-          mask="999.999.999-99"
-          value={cpfValue}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            setValue("cpf", e.target.value.replace(/[^A-Z0-9]+/gi, ""))
-          }
-          invalid={!!errors.cpf?.message}
-          placeholder="Digite o CPF do entregador"
-        />
-      </Input.Wrapper>
+      
 
       <Input.Wrapper label="Telefone" error={errors.telefone?.message}>
         <Input
@@ -111,23 +85,29 @@ export const AddEntregador: FC<AddEntregadorProps> = ({
             setValue("telefone", e.target.value.replace(/[^A-Z0-9]+/gi, ""))
           }
           invalid={!!errors.telefone?.message}
-          placeholder="Digite o seu telefone"
+          placeholder="Digite o telefone do usuário"
         />
       </Input.Wrapper>
       <TextInput
-        {...register("placa_veiculo")}
-        label="Placa do veículo"
-        placeholder="Digite a placa do veículo"
-        error={errors.placa_veiculo?.message}
-        minLength={7}
-        maxLength={7}
+        {...register("endereco")}
+        label="Endereço"
+        placeholder="Digite o endereço do usuário"
+        error={errors.endereco?.message}
+      
       />
 
       <TextInput
-        {...register("rota")}
-        label="Rota"
-        placeholder="Digite a rota do entregador"
-        error={errors.rota?.message}
+        {...register("email")}
+        label="Email"
+        placeholder="Digite a email do usuário"
+        error={errors.email?.message}
+        maxLength={20}
+      />
+        <PasswordInput
+        {...register("senha")}
+        label="Senha"
+        placeholder="Digite a senha do Usuario"
+        error={errors.senha?.message}
         maxLength={20}
       />
 

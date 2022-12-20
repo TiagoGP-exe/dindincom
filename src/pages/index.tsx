@@ -1,11 +1,20 @@
 import { Header } from "@mantine/core";
+import Cookies from "js-cookie";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { GetServerSidePropsContext } from "next/types";
 import styles from "./styles.module.css";
 
-export default function Home() {
-  const isLogged = true;
+interface IHomeProps {
+  isLogged: boolean,
+  userName?:string
+}
+
+export default function Home({isLogged,userName}: IHomeProps) {
+ const handleLogout = async () => {
+  Cookies.remove('userName')
+ }
 
   return (
     <div className={styles.container}>
@@ -17,7 +26,11 @@ export default function Home() {
       <Header className={styles.header} bg="blue.6" height={80}>
         <Link href={"/"}>Sobre a Loja</Link>
         {isLogged ? (
+          <>
+       
           <Link href={"/dashboard"}>dashboard</Link>
+          <Link href={"/login"} onClick={handleLogout}>Logout</Link>
+          </>
         ) : (
           <>
             <Link href={"/login"}>Login</Link>
@@ -25,6 +38,28 @@ export default function Home() {
           </>
         )}
       </Header>
+      <div className={styles.userName}>
+          {isLogged && (
+               <p>Seja bem vindo {userName}!!!</p>
+          )}
+      </div>
     </div>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+ const {userName} = ctx.req.cookies;
+    if(userName){
+      return {
+        props: {
+          isLogged:true,
+          userName
+        }
+      }
+    }
+    return {
+      props: {
+        isLogged:false,
+      }
+    }
 }

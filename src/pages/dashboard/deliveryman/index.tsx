@@ -6,7 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { FC, useState } from "react";
 import { AddEntregador } from "../../../components/AddEntregador";
-import { deleteCremosinho } from "../../../services/cremosinhoService";
+
 import {
   IEntregador,
   IEntregadorType,
@@ -91,7 +91,7 @@ const DeliveryMan: FC<DeliveryManProps> = ({ allEntregador }) => {
   const modalUpdate = (data: IEntregadorType) => {
     console.log(data);
     openModal({
-      title: "Editar Produto",
+      title: "Editar Entregador",
       centered: true,
       radius: "md",
       children: (
@@ -106,7 +106,7 @@ const DeliveryMan: FC<DeliveryManProps> = ({ allEntregador }) => {
 
   const modalAdd = () =>
     openModal({
-      title: "Adicionar Produto",
+      title: "Adicionar Entregador",
       centered: true,
       radius: "md",
       children: (
@@ -149,6 +149,7 @@ const DeliveryMan: FC<DeliveryManProps> = ({ allEntregador }) => {
           Entregador
         </Link>
         <Link href={"/dashboard/product"}>Produtos</Link>
+        <Link href={"/dashboard/user"}>Usuario</Link>
         <Link href={"/"}>Sair</Link>
       </Header>
 

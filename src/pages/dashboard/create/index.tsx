@@ -9,6 +9,8 @@ import { Cart } from "../../../components/Cart";
 import { ListAllCremosinho } from "../../../components/ListAllCremosinho";
 import { ICremosinho } from "../../../services/cremosinhoService";
 import { getEntregador } from "../../../services/entregadorService";
+import { getFormaDePagamento } from "../../../services/formaDePagamentoService";
+import { getStatus } from "../../../services/statusService";
 import { formattedValue } from "../../../utils/formatter";
 import styles from "./styles.module.css";
 
@@ -23,6 +25,8 @@ interface ILabeledValue {
 
 interface DashboardProps {
   allEntregador: ILabeledValue[];
+  allFormaDePagamento:ILabeledValue[];
+  allStatus: ILabeledValue[];
 }
 
 interface IForm {
@@ -31,12 +35,13 @@ interface IForm {
   entregador: "s" | "n";
   dt_entrega: string;
   pago: "s" | "n";
+  itens: [any];
   id_forma_pagamento: number;
   id_entregador: number;
   id_status: number;
 }
 
-const Dashboard: FC<DashboardProps> = ({ allEntregador }) => {
+const Dashboard: FC<DashboardProps> = ({ allEntregador,allFormaDePagamento,allStatus }) => {
   const [cremosinho, setCremosinho] = useState<ICremosinhoSell[]>([]);
 
   const {
@@ -82,11 +87,18 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador }) => {
   );
 
   const onSubmit = (data: IForm) => {
-    console.log(data);
+   const resultPerItem = cremosinho.map(item=>({
+   ...item,
+   valor:Number(item.vlr_unitario) * item.qtd
+   }))
+    const formattedData = {...data,itens:resultPerItem,total}
+    console.log(formattedData);
   };
 
   const entregador = watch("entregador");
   const idEntregador = watch("id_entregador");
+  const idFormaDePagamento = watch("id_forma_pagamento");
+  const idStatus = watch("id_status");
 
   const pago = watch("pago");
 
@@ -141,6 +153,23 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador }) => {
                 </>
               )}
             </div>
+            <Select label="Forma de Pagamento"
+              placeholder="Selecione uma forma"
+              data={allFormaDePagamento}
+              value={String(idFormaDePagamento)}
+              onChange={(e) =>
+                e !== null && setValue("id_forma_pagamento", Number(e))
+              }></Select>
+               <Select label="Status da Venda"
+              placeholder="Selecione um status"
+              data={allStatus}
+              value={String(idStatus)}
+              onChange={(e) =>
+                e !== null && setValue("id_status", Number(e))
+              }></Select>
+
+          
+          
             <Cart
               actualCremosinho={cremosinho}
               addById={addById}
@@ -148,17 +177,19 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador }) => {
               deleteById={deleteById}
             />
           </div>
-          <div>
+          <div >
             <ListAllCremosinho
               actualCremosinho={cremosinho}
               addCremosinho={addCremosinho}
+            
             />
+            
             <div className={styles.mt}>
               <p>Total:</p>
               <p>{formattedValue(total)}</p>
             </div>
 
-            <Button type="submit" disabled={total === 0} fullWidth mt={20}>
+            <Button type="submit" disabled={total === 0} fullWidth mt={20} >
               Finalizar
             </Button>
           </div>
@@ -170,16 +201,29 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador }) => {
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   try {
-    const response = await getEntregador();
-
-    const formattedResponse = response.map((entregador) => ({
+    const entregadorResponse = await getEntregador();
+    const formaDePagamentoResponse = await getFormaDePagamento();
+    const statusResponse = await getStatus();
+    
+    const formattedEntregadorResponse = entregadorResponse.map((entregador) => ({
       label: entregador.nome,
       value: String(entregador.id_entregador),
+    }));
+    const formattedFormaDePagamentoResponse = formaDePagamentoResponse.map((entregador) => ({
+      label: entregador.descricao,
+      value: String(entregador.id_forma_pagamento),
+    }));
+
+    const formattedStatusResponse = statusResponse.map((entregador) => ({
+      label: entregador.nome,
+      value: String(entregador.id_status),
     }));
 
     return {
       props: {
-        allEntregador: formattedResponse,
+        allEntregador: formattedEntregadorResponse,
+        allFormaDePagamento: formattedFormaDePagamentoResponse,
+        allStatus: formattedStatusResponse,
       },
     };
   } catch {

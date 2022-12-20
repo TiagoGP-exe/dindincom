@@ -151,6 +151,7 @@ const Product: FC<ProductProps> = ({ allCremosinho }) => {
         <Link className={styles.active} href={"/dashboard/product"}>
           Produtos
         </Link>
+        <Link href={"/dashboard/user"}>Usuario</Link>
         <Link href={"/"}>Sair</Link>
       </Header>
 
