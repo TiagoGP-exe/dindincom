@@ -13,6 +13,7 @@ import { getFormaDePagamento } from "../../../services/formaDePagamentoService";
 import { getStatus } from "../../../services/statusService";
 import { formattedValue } from "../../../utils/formatter";
 import styles from "./styles.module.css";
+import { HeaderDashboard } from "../../../components/HeaderDashboard";
 
 export interface ICremosinhoSell extends ICremosinho {
   qtd: number;
@@ -25,7 +26,7 @@ interface ILabeledValue {
 
 interface DashboardProps {
   allEntregador: ILabeledValue[];
-  allFormaDePagamento:ILabeledValue[];
+  allFormaDePagamento: ILabeledValue[];
   allStatus: ILabeledValue[];
 }
 
@@ -41,7 +42,11 @@ interface IForm {
   id_status: number;
 }
 
-const Dashboard: FC<DashboardProps> = ({ allEntregador,allFormaDePagamento,allStatus }) => {
+const Dashboard: FC<DashboardProps> = ({
+  allEntregador,
+  allFormaDePagamento,
+  allStatus,
+}) => {
   const [cremosinho, setCremosinho] = useState<ICremosinhoSell[]>([]);
 
   const {
@@ -87,11 +92,11 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador,allFormaDePagamento,allSt
   );
 
   const onSubmit = (data: IForm) => {
-   const resultPerItem = cremosinho.map(item=>({
-   ...item,
-   valor:Number(item.vlr_unitario) * item.qtd
-   }))
-    const formattedData = {...data,itens:resultPerItem,total}
+    const resultPerItem = cremosinho.map((item) => ({
+      ...item,
+      valor: Number(item.vlr_unitario) * item.qtd,
+    }));
+    const formattedData = { ...data, itens: resultPerItem, total };
     console.log(formattedData);
   };
 
@@ -104,14 +109,7 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador,allFormaDePagamento,allSt
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Header className={styles.header} bg="blue.6" height={80}>
-        <Link className={styles.active} href={"/dashboard"}>
-          Venda
-        </Link>
-        <Link href={"/dashboard/deliveryman"}>Entregador</Link>
-        <Link href={"/dashboard/product"}>Produtos</Link>
-        <Link href={"/"}>Sair</Link>
-      </Header>
+      <HeaderDashboard />
 
       <div className={styles.container}>
         <main className={styles.containerSell}>
@@ -153,23 +151,23 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador,allFormaDePagamento,allSt
                 </>
               )}
             </div>
-            <Select label="Forma de Pagamento"
+            <Select
+              label="Forma de Pagamento"
               placeholder="Selecione uma forma"
               data={allFormaDePagamento}
               value={String(idFormaDePagamento)}
               onChange={(e) =>
                 e !== null && setValue("id_forma_pagamento", Number(e))
-              }></Select>
-               <Select label="Status da Venda"
+              }
+            ></Select>
+            <Select
+              label="Status da Venda"
               placeholder="Selecione um status"
               data={allStatus}
               value={String(idStatus)}
-              onChange={(e) =>
-                e !== null && setValue("id_status", Number(e))
-              }></Select>
+              onChange={(e) => e !== null && setValue("id_status", Number(e))}
+            ></Select>
 
-          
-          
             <Cart
               actualCremosinho={cremosinho}
               addById={addById}
@@ -177,19 +175,18 @@ const Dashboard: FC<DashboardProps> = ({ allEntregador,allFormaDePagamento,allSt
               deleteById={deleteById}
             />
           </div>
-          <div >
+          <div>
             <ListAllCremosinho
               actualCremosinho={cremosinho}
               addCremosinho={addCremosinho}
-            
             />
-            
+
             <div className={styles.mt}>
               <p>Total:</p>
               <p>{formattedValue(total)}</p>
             </div>
 
-            <Button type="submit" disabled={total === 0} fullWidth mt={20} >
+            <Button type="submit" disabled={total === 0} fullWidth mt={20}>
               Finalizar
             </Button>
           </div>
@@ -204,15 +201,19 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
     const entregadorResponse = await getEntregador();
     const formaDePagamentoResponse = await getFormaDePagamento();
     const statusResponse = await getStatus();
-    
-    const formattedEntregadorResponse = entregadorResponse.map((entregador) => ({
-      label: entregador.nome,
-      value: String(entregador.id_entregador),
-    }));
-    const formattedFormaDePagamentoResponse = formaDePagamentoResponse.map((entregador) => ({
-      label: entregador.descricao,
-      value: String(entregador.id_forma_pagamento),
-    }));
+
+    const formattedEntregadorResponse = entregadorResponse.map(
+      (entregador) => ({
+        label: entregador.nome,
+        value: String(entregador.id_entregador),
+      })
+    );
+    const formattedFormaDePagamentoResponse = formaDePagamentoResponse.map(
+      (entregador) => ({
+        label: entregador.descricao,
+        value: String(entregador.id_forma_pagamento),
+      })
+    );
 
     const formattedStatusResponse = statusResponse.map((entregador) => ({
       label: entregador.nome,
