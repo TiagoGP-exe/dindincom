@@ -8,6 +8,12 @@
   gap: 1.5rem;
 }
 
-.userName{
+.userName {
   padding: 2rem;
+}
+
+.image {
+  position: fixed;
+  bottom: 1rem;
+  right: 3rem;
 }
