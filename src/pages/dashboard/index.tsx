@@ -1,10 +1,57 @@
-import { Button, Header, Input, PasswordInput, TextInput } from "@mantine/core";
+import { ActionIcon, Button, Header, Input, PasswordInput, Table, TextInput } from "@mantine/core";
 import Head from "next/head";
 import Link from "next/link";
 import styles from "./styles.module.css";
 import { HeaderDashboard } from "../../components/HeaderDashboard";
+import {getVenda,IVendaType,IVendaView} from "../../services/vendaService";
+import { GetServerSidePropsContext } from "next/types";
+import { FC, useState } from "react";
+import { IconEdit, IconTrash } from "@tabler/icons";
+import { formattedValue } from "../../utils/formatter";
+const ths = (
+  <tr>
+    <th>Cliente</th>
+    <th>Total da Venda</th>
+    <th>Data da Venda</th>
+    <th>Entrega</th>
+    <th>Entregador</th>
+    <th>Data da Entrega</th>
+    <th>Pago</th>
+    <th>Forma de Pagamento</th>
+    <th>Status da Venda</th>
+    <th>Ações</th>
+  </tr>
+);
+interface VendaProps {
+  allVenda: IVendaView[];
+}
 
-const Dashboard = () => {
+
+const Dashboard: FC<VendaProps> = ({allVenda}) => {
+  const [venda, setVenda] = useState<IVendaView[]>(allVenda);
+
+  const rows = venda.map((element) => (
+    <tr key={element.id_venda}>
+      <td>{element.cliente}</td>
+      <td>{formattedValue(element.total_da_venda)}</td>
+      <td>{element.data_da_venda}</td>
+      <td>{element.entrega}</td>
+      <td>{element.entregador}</td>
+      <td>{element.dt_entrega}</td>
+      <td>{element.pago}</td>
+      <td>{element.forma_de_pagamento}</td>
+      <td>{element.status_da_venda}</td>
+      <td className={styles.tableFlex}>
+        <ActionIcon >
+          <IconEdit />
+        </ActionIcon>
+        <ActionIcon>
+          <IconTrash />
+        </ActionIcon>
+      </td>
+    </tr>
+  ));
+  
   return (
     <div>
       <Head>
@@ -23,6 +70,11 @@ const Dashboard = () => {
           >
             Adicionar
           </Button>
+          <Table striped highlightOnHover withBorder withColumnBorders>
+            <thead>{ths}</thead>
+            <tbody>{rows}</tbody>
+          </Table>
+          
         </div>
       </main>
     </div>
@@ -30,3 +82,22 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  try {
+    const response = await getVenda();
+
+    return {
+      props: {
+        allVenda: response,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        allVenda: [],
+      },
+    };
+  }
+}

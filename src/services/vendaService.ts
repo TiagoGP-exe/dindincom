@@ -1,8 +1,10 @@
 import { api } from "../utils/api";
 
 export interface IVendaView {
+    id_venda:string;
     cliente: string;
     total_da_venda: string;
+    data_da_venda:string;
     entrega: string;
     entregador: string;
     dt_entrega: string;
@@ -19,6 +21,7 @@ export interface IProductItens {
 }
 
 export interface IVenda {
+    id_venda: number;
     id_forma_pagamento: number;
     id_status: number;
     id_entregador: number;
@@ -30,15 +33,17 @@ export interface IVenda {
     total: string;
 }
 
+export interface IVendaType extends IVenda {
+    id_venda: number;
+  }
 
-
-export const getCremosinho = async () => {
+export const getVenda = async () => {
     const { data } = await api.get("/vendas");
 
     return data as IVendaView[];
 };
 
-export const postCremosinho = async (cremosinho: IVenda) => {
+export const postVenda = async (cremosinho: IVenda) => {
     const { data } = await api.post("/venda", cremosinho);
 
     return data;
