@@ -13,6 +13,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { FC, useState } from "react";
 import { AddCremosinho } from "../../../components/AddCremosinho";
+import { showNotification } from '@mantine/notifications';
 import {
   deleteCremosinho,
   getCremosinho,
@@ -71,10 +72,18 @@ const Product: FC<ProductProps> = ({ allCremosinho }) => {
         inativo: "f",
         vlr_unitario: onlyNumbers(data.vlr_unitario) / 100,
       });
+      showNotification({
+        title: 'Sucesso',
+        message: 'Cremosinho cadastrado com sucesso',
+      })
       closeAllModals();
       const response = await getCremosinho();
       setCremosinho(response);
     } catch (error) {
+      showNotification({
+        title: 'Erro',
+        message: 'Erro ao cadastrar o cremosinho',
+      })
       console.log(error);
     }
   };

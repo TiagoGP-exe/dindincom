@@ -16,6 +16,7 @@ import styles from "./styles.module.css";
 import { getUsuario } from "../../../services/usuarioService";
 import { postVenda } from "../../../services/vendaService";
 import { useRouter } from "next/router";
+import { showNotification } from "@mantine/notifications";
 
 export interface ICremosinhoSell extends ICremosinho {
   qtd: number;
@@ -103,8 +104,16 @@ const Dashboard: FC<DashboardProps> = ({
     const formattedData = { ...data, itens: resultPerItem, total };
     try {
       await postVenda(formattedData as any);
+      showNotification({
+        title: 'Sucesso',
+        message: 'Venda realizada com sucesso',
+      })
       router.push('/dashboard')
     } catch (error) {
+      showNotification({
+        title: 'Erro',
+        message: 'Erro ao realizar venda',
+      })
       console.log(error);
     }
   };

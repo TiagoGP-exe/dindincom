@@ -6,6 +6,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { FC, useState } from "react";
 import { AddEntregador } from "../../../components/AddEntregador";
+import { showNotification } from '@mantine/notifications';
 
 import {
   IEntregador,
@@ -66,11 +67,19 @@ const DeliveryMan: FC<DeliveryManProps> = ({ allEntregador }) => {
         ...data,
         cpf: String(onlyNumbers(data.cpf)),
       });
+      showNotification({
+        title: 'Sucesso',
+        message: 'Entregador cadastrado com sucesso',
+      })
       closeAllModals();
       const response = await getEntregador();
       setCremosinho(response);
     } catch (error) {
       console.log(error);
+      showNotification({
+        title: 'Erro',
+        message: 'Houve um erro ao cadastrar o entregador',
+      })
     }
   };
 

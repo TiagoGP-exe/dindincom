@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from "yup";
 import { registerPost } from "../../services/registerService";
 import { useForm } from "react-hook-form";
+import { showNotification } from '@mantine/notifications';
 
 const schema = yup.object({
   nome: yup.string().required('nome é um campo necessário'),
@@ -33,8 +34,15 @@ const Register = () => {
   const processandoRegistro = async (data:IForm) =>{
     try {
      await registerPost(data)
+     showNotification({
+      title: 'Sucesso',
+      message: 'Seu login foi realizado com sucesso',
+    })
     } catch (error) {
-      
+      showNotification({
+        title: 'Error',
+        message: 'Houve um erro ao cadastrar',
+      })
     }
  
 }

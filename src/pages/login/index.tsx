@@ -38,6 +38,10 @@ const Login = () => {
         message: 'Seu login foi realizado com sucesso',
       })
     } catch (error) {
+      showNotification({
+        title: 'Error',
+        message: 'Houve um erro ao fazer o login',
+      })
       setError('senha',{
         type: "custom",
         message:"Usuário e/ou Senha Inválida"

@@ -5,6 +5,7 @@ import { GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { FC, useState } from "react";
+
 import { AddUsuario } from "../../../components/AddUsuario";
 import {
   IUsuario,
@@ -16,6 +17,7 @@ import {
 } from "../../../services/usuarioService";
 import styles from "./styles.module.css";
 import { HeaderDashboard } from "../../../components/HeaderDashboard";
+import { showNotification } from "@mantine/notifications";
 
 const ths = (
   <tr>
@@ -57,10 +59,18 @@ const Usuario: FC<UsuarioProps> = ({ allUsuario }) => {
   const addUsuario = async (data: IUsuario) => {
     try {
       await postUsuario(data);
+      showNotification({
+        title: 'Sucesso',
+        message: 'Usuário cadastrado com sucesso',
+      })
       closeAllModals();
       const response = await getUsuario();
       setUsuario(response);
     } catch (error) {
+      showNotification({
+        title: 'Erro',
+        message: 'Erro ao cadastrar usuário',
+      })
       console.log(error);
     }
   };
