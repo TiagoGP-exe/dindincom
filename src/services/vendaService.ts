@@ -55,6 +55,15 @@ export const putVenda = async (cremosinho: IVenda) => {
   return data;
 };
 
+export const showVenda = async (cremosinho: IVendaType) => {
+    const { data } = await api.get(
+        `/venda/${cremosinho.id_venda}`,
+       
+    );
+
+    return data;
+};
+
 // export const putCremosinho = async (cremosinho: IVendaPrice) => {
 //     const { data } = await api.put(
 //         `/cremosinho/${cremosinho.id_cremosinho}`,
