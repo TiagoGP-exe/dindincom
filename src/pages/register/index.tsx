@@ -13,7 +13,8 @@ const schema = yup.object({
   telefone: yup.string(),
   endereco: yup.string(),
   email: yup.string().email('email inválido').required('email é um campo obrigatório'),
-  senha: yup.string().min(4, 'senha deve ter no minimo 4 caracteres').required('senha é um campo obrigatório'),
+  senha: yup.string().min(4, 'senha deve ter no minimo 4 caracteres')
+  .required('senha é um campo obrigatório'),
 
 }).required();
 
